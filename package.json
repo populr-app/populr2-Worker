@@ -1,0 +1,19 @@
+{
+  "name": "populr2-worker",
+  "version": "2.0.0",
+  "description": "Webworker for Populr API v2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/persnickety-vagabond/populr2-Worker.git"
+  },
+  "author": "Garrett Cox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/persnickety-vagabond/populr2-Worker/issues"
+  },
+  "homepage": "https://github.com/persnickety-vagabond/populr2-Worker#readme"
+}
