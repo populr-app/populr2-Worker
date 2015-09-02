@@ -1,8 +1,11 @@
 
-import News from './model'
+var News = require('./model');
 
-export function bulkCreate(array) {
-
+module.exports.bulkCreate = function(array) {
   return News.bulkCreate(array)
-    .then(()=> array)
-}
+    .then(function() { return array; });
+};
+
+module.exports.getAll = function() {
+  return News.findAll();
+};

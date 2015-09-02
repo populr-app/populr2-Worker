@@ -1,10 +1,10 @@
 
-import Sequelize from 'sequelize'
-import db from '../connection'
+var Sequelize = require('sequelize');
+var db = require('../connection');
 
-export default db.define('context', {
+module.exports = db.define('context', {
   fullName: { type: Sequelize.STRING, primaryKey: true },
   occupation: { type: Sequelize.STRING },
   dob: { type: Sequelize.STRING },
   description: { type: Sequelize.TEXT }
-}, { freezeTableName: true })
+}, { freezeTableName: true });

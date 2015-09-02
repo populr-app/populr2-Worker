@@ -1,9 +1,12 @@
 
-import Sequelize from 'sequelize'
-import db from '../connection'
+var Sequelize = require('sequelize');
+var db = require('../connection');
 
-export default db.define('twitter', {
+module.exports = db.define('twitter', {
   fullName: { type: Sequelize.STRING, primaryKey: true },
   handle: { type: Sequelize.STRING },
-  twitterId: { type: Sequelize.STRING }
-}, { freezeTableName: true })
+  url: { type: Sequelize.STRING },
+  avi: { type: Sequelize.STRING },
+  followers: { type: Sequelize.INTEGER },
+  followersDelta: { type: Sequelize.INTEGER }
+}, { freezeTableName: true });

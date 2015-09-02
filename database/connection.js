@@ -1,6 +1,5 @@
 
-import Sequelize from 'sequelize'
+var Sequelize = require('sequelize');
+var uri = 'postgres://localhost:5432/garrettcox';
 
-const uri = 'postgres://localhost:5432/garrettcox'
-
-export default new Sequelize(uri, { logging: false })
+module.exports = new Sequelize(uri, { logging: false });

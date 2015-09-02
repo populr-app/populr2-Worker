@@ -1,8 +1,11 @@
 
-import People from './model'
+var People = require('./model');
 
-export function bulkCreate(array) {
-
+module.exports.bulkCreate = function(array) {
   return People.bulkCreate(array)
-    .then(()=> array)
-}
+    .then(function() { return array; });
+};
+
+module.exports.getAll = function() {
+  return People.findAll();
+};

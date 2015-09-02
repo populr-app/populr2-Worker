@@ -1,8 +1,11 @@
 
-import Context from './model'
+var Context = require('./model');
 
-export function bulkCreate(array) {
-
+module.exports.bulkCreate = function(array) {
   return Context.bulkCreate(array)
-    .then(()=> array)
-}
+    .then(function() { return array; });
+};
+
+module.exports.getAll = function() {
+  return Context.findAll();
+};

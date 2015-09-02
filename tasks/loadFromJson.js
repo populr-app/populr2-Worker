@@ -1,28 +1,31 @@
 
-console.time('loadFromJson')
-import db from '../database/connection'
-import {assign} from 'lodash'
-import * as People from '../database/people/controller'
-import * as Context from '../database/context/controller'
-import * as Twitter from '../database/twitter/controller'
-import * as News from '../database/news/controller'
+console.time('loadFromJson');
 
-const data = require('../json/people.json')
+var _ = require('lodash');
+var db = require('../database/connection');
+var People = require('../database/people/controller');
+var Context = require('../database/context/controller');
+var Twitter = require('../database/twitter/controller');
+var News = require('../database/news/controller');
+var data = require('../json/people.json').slice(0, 20);
 
-db.sync({force: true})
-  .then(()=> {
-    data.forEach(function(personObj) {
-      personObj = assign(personObj, personObj.context, personObj.twitter)
-      delete personObj.context
-      delete personObj.twitter
+module.exports = function() {
+  return db.sync({force: true})
+    .then(function() {
+
+      data.forEach(function(personObj) {
+        personObj = _.assign(personObj, personObj.context, personObj.twitter);
+        delete personObj.context;
+        delete personObj.twitter;
+      });
+
+      return data;
+    })
+    .then(People.bulkCreate)
+    .then(Context.bulkCreate)
+    .then(Twitter.bulkCreate)
+    .then(News.bulkCreate)
+    .then(function() {
+      console.timeEnd('loadFromJson');
     });
-    return data
-  })
-  .then(People.bulkCreate)
-  .then(Context.bulkCreate)
-  .then(Twitter.bulkCreate)
-  .then(News.bulkCreate)
-  .then(()=> {
-    console.timeEnd('loadFromJson')
-    process.exit(0)
-  })
+};

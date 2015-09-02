@@ -1,13 +1,15 @@
 
-console.time('dropDatabase')
-import db from '../database/connection'
-import People from '../database/people/model'
-import Twitter from '../database/twitter/model'
-import Context from '../database/context/model'
-import News from '../database/news/model'
+console.time('dropDatabase');
 
-db.sync({force: true})
-  .then(()=> {
-    console.timeEnd('dropDatabase')
-    process.exit(0)
-  })
+var db = require('../database/connection');
+var People = require('../database/people/model');
+var Twitter = require('../database/twitter/model');
+var Context = require('../database/context/model');
+var News = require('../database/news/model');
+
+module.exports = function() {
+  return db.sync({force: true})
+    .then(function() {
+      console.timeEnd('dropDatabase');
+    });
+};
