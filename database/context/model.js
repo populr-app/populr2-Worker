@@ -1,8 +1,8 @@
 
-var Sequelize = require('sequelize');
-var db = require('../connection');
+let Sequelize = require('sequelize');
+let db = require('../connection');
 
-module.exports = db.define('context', {
+export default db.define('context', {
   fullName: { type: Sequelize.STRING, primaryKey: true },
   occupation: { type: Sequelize.STRING },
   dob: { type: Sequelize.STRING },

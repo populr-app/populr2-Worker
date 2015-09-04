@@ -1,25 +1,26 @@
 
-var Twitter = require('./model');
-var bird = require('bluebird');
+import Twitter from './model';
 
-module.exports.bulkCreate = function(array) {
+export function bulkCreate(array) {
   return Twitter.bulkCreate(array)
-    .then(function() { return array; });
-};
+    .then(() => array);
+}
 
-module.exports.update = function(newData) {
-  return Twitter.upsert(newData);
-};
+export function bulkUpdate(array) {
+  return Twitter.bulkCreate(array, {updateOnDuplicate: true})
+    .then(() => array);
+}
 
-module.exports.getAll = function() {
-  return Twitter.findAll();
-};
+export function getAll() {
+  return Twitter.findAll()
+    .then(results => results.map(result => result.get()));
+}
 
-module.exports.getMax = function() {
+export function getMax() {
   var promiseArray = [];
 
   promiseArray.push(Twitter.max('followers'));
   promiseArray.push(Twitter.max('followersDelta'));
 
-  return bird.all(promiseArray);
-};
+  return Promise.all(promiseArray);
+}

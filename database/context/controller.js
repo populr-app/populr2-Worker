@@ -1,11 +1,17 @@
 
-var Context = require('./model');
+import Context from './model';
 
-module.exports.bulkCreate = function(array) {
+export function bulkCreate(array) {
   return Context.bulkCreate(array)
-    .then(function() { return array; });
-};
+    .then(() => array);
+}
 
-module.exports.getAll = function() {
-  return Context.findAll();
-};
+export function bulkUpdate(array) {
+  return Context.bulkCreate(array, {updateOnDuplicate: true})
+    .then(() => array);
+}
+
+export function getAll() {
+  return Context.findAll()
+    .then(results => results.map(result => result.get()));
+}

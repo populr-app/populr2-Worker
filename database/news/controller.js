@@ -1,11 +1,17 @@
 
-var News = require('./model');
+import News from './model';
 
-module.exports.bulkCreate = function(array) {
+export function bulkCreate(array) {
   return News.bulkCreate(array)
-    .then(function() { return array; });
-};
+    .then(() => array);
+}
 
-module.exports.getAll = function() {
-  return News.findAll();
-};
+export function bulkUpdate(array) {
+  return News.bulkCreate(array, {updateOnDuplicate: true})
+    .then(() => array);
+}
+
+export function getAll() {
+  return News.findAll()
+    .then(results => results.map(result => result.get()));
+}

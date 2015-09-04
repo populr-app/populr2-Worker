@@ -1,5 +1,5 @@
 
-var Sequelize = require('sequelize');
-var uri = 'postgres://localhost:5432/garrettcox';
+let Sequelize = require('sequelize');
+let uri = 'mysql://root@localhost:3306/populr';
 
-module.exports = new Sequelize(uri, { logging: false });
+export default new Sequelize(uri, { logging: false });

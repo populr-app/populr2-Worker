@@ -1,7 +1,7 @@
 
-var Sequelize = require('sequelize');
-var db = require('../connection');
+let Sequelize = require('sequelize');
+let db = require('../connection');
 
-module.exports = db.define('people', {
+export default db.define('people', {
   fullName: { type: Sequelize.STRING, primaryKey: true }
 }, { freezeTableName: true });
