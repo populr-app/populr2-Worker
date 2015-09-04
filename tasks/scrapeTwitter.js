@@ -1,86 +1,72 @@
 
 console.time('scrapeTwitter');
 
-var _ = require('lodash');
-var bird = require('bluebird');
-var twitterApi = require('twitter');
-var Twitter = require('../database/twitter/controller');
+import * as _ from 'lodash';
+import {promisifyAll} from 'bluebird';
+import twitterApi from 'twitter';
+import * as Twitter from '../database/twitter/controller';
 
-bird.promisifyAll(twitterApi.prototype);
+promisifyAll(twitterApi.prototype);
 
-var client = new twitterApi({
+let twitterClient = new twitterApi({
   consumer_key: 'FJBhQkiX2u9YktlqZwjwbdPyL',
   consumer_secret: 'ursyON7h1sw3oz6E17sPSxe59nE0MVhUyjnD5dvTANjRWV16cQ',
   access_token_key: '2659317550-PrW3k7aoK6M6tIRASIrtph5Jbqzgwi5YmZQU4vM',
   access_token_secret: '1NQAqS6hxuLisJ6AHYTVPJmmWuhy3Y12iWRhWBdpMZ5bp'
 });
 
-module.exports = function() {
+export default function() {
   return Twitter.getAll()
-    .then(mapGet)
-    .then(splitIntoChunks)
+    .then(results => _.chunk(results, 100))
     .then(getTwitterData)
+    .then(results => _.flatten(results))
+    .then(Twitter.bulkUpdate)
     .then(Twitter.getMax)
-    .then(updateScores)
-    .then(function() {
+    .then(calculateScores)
+    .then(Twitter.bulkUpdate)
+    .then(() => {
       console.timeEnd('scrapeTwitter');
-    })
-    .catch(e);
-};
-
-function mapGet(people) {
-  return people.map(function(person) {
-    return person.get();
-  });
-}
-
-function splitIntoChunks(people) {
-  return _.chunk(people, 100);
+    });
 }
 
 function getTwitterData(chunks) {
-  var promiseArray = [];
+  let promiseArray = [];
 
-  chunks.forEach(function(chunk) {
-    var handles = _.pluck(chunk, 'handle').join();
-    var peopleChunk = _.indexBy(chunk, function(obj) {
-      return obj.handle.toLowerCase();
-    });
+  chunks.forEach(chunkArray => {
+    let chunkString = _.pluck(chunkArray, 'handle').join();
+    let chunkObject = _.indexBy(chunkArray, obj => obj.handle.toLowerCase());
 
-    promiseArray.push(client.getAsync('users/lookup', {screen_name: handles})
-      .then(updateTwitterData(peopleChunk)));
+    promiseArray.push(twitterClient.getAsync('users/lookup', {screen_name: chunkString})
+      .then(processTwitterData(chunkObject)));
   });
 
-  return bird.all(promiseArray);
+  return Promise.all(promiseArray);
 }
 
-function updateTwitterData(peopleChunk) {
-  return function(twitterChunk) {
-    var promiseArray = [];
-
-    twitterChunk[0].forEach(function(twitterData) {
-      var oldData = peopleChunk[twitterData.screen_name.toLowerCase()];
-      console.log(oldData.followers);
-      var newData = {
+function processTwitterData(chunkObject) {
+  return function(twitterResults) {
+    return twitterResults[0].map(twitterResult => {
+      let oldData = chunkObject[twitterResult.screen_name.toLowerCase()];
+      return {
         fullName: oldData.fullName,
-        handle: twitterData.screen_name,
-        url: twitterData.url,
-        followers: twitterData.followers_count,
-        followersDelta: (oldData.followers !== null && oldData.followers !== undefined) ? twitterData.followers_count - oldData.followers : twitterData.followers_count,
-        avi: twitterData.profile_image_url
+        handle: twitterResult.screen_name,
+        url: twitterResult.url,
+        followers: twitterResult.followers_count,
+        followersDelta: (oldData.followers !== null) ? twitterResult.followers_count - oldData.followers : twitterResult.followers_count,
+        avi: twitterResult.profile_image_url
       };
-
-      promiseArray.push(Twitter.update(newData));
     });
-
-    return bird.all(promiseArray);
   };
 }
 
-function updateScores(max) {
-  console.log(max);
-}
-
-function e(err) {
-  console.log(err);
+function calculateScores(maxs) {
+  return Twitter.getAll()
+    .then(results => results.map(result => {
+      let f = result.followers / maxs[0] || 0;
+      let fd = result.followersDelta / maxs[1] || 0;
+      let score = Math.floor(((f + fd) / 2) * 1000);
+      if (result.score !== null) result.scoreDelta = score - result.score;
+      result.score = score;
+      return result;
+    }));
 }
