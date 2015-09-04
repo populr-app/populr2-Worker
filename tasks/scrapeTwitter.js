@@ -2,11 +2,8 @@
 console.time('scrapeTwitter');
 
 import * as _ from 'lodash';
-import {promisifyAll} from 'bluebird';
 import twitterApi from 'twitter';
 import * as Twitter from '../database/twitter/controller';
-
-promisifyAll(twitterApi.prototype);
 
 let twitterClient = new twitterApi({
   consumer_key: 'FJBhQkiX2u9YktlqZwjwbdPyL',
@@ -24,9 +21,7 @@ export default function() {
     .then(Twitter.getMax)
     .then(calculateScores)
     .then(Twitter.bulkUpdate)
-    .then(() => {
-      console.timeEnd('scrapeTwitter');
-    });
+    .then(() => console.timeEnd('scrapeTwitter'));
 }
 
 function getTwitterData(chunks) {
@@ -36,7 +31,7 @@ function getTwitterData(chunks) {
     let chunkString = _.pluck(chunkArray, 'handle').join();
     let chunkObject = _.indexBy(chunkArray, obj => obj.handle.toLowerCase());
 
-    promiseArray.push(twitterClient.getAsync('users/lookup', {screen_name: chunkString})
+    promiseArray.push(twitterRequest('users/lookup', {screen_name: chunkString})
       .then(processTwitterData(chunkObject)));
   });
 
@@ -45,7 +40,7 @@ function getTwitterData(chunks) {
 
 function processTwitterData(chunkObject) {
   return function(twitterResults) {
-    return twitterResults[0].map(twitterResult => {
+    return twitterResults.map(twitterResult => {
       let oldData = chunkObject[twitterResult.screen_name.toLowerCase()];
       return {
         fullName: oldData.fullName,
@@ -69,4 +64,13 @@ function calculateScores(maxs) {
       result.score = score;
       return result;
     }));
+}
+
+function twitterRequest(...args) {
+  return new Promise((resolve, reject) => {
+    twitterClient.get(...args, (err, response) => {
+      if (err) reject(err);
+      else resolve(response);
+    });
+  });
 }
