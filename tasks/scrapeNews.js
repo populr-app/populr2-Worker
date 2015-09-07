@@ -3,7 +3,6 @@ console.time('scrapeNews');
 
 import * as _ from 'lodash';
 import * as News from '../database/news/controller';
-import {writeFile} from 'fs';
 import cheerio from 'cheerio';
 import request from 'request';
 
@@ -14,6 +13,10 @@ export default function() {
   return getAllHtml()
     .then(News.getAll)
     .then(countOccurences)
+    .then(News.bulkUpdate)
+    .then(News.getMax)
+    .then(calculateScores)
+    .then(News.bulkUpdate)
     .then(() => console.timeEnd('scrapeNews'))
     .catch(e => console.log(e));
 }
@@ -37,12 +40,13 @@ function getAllHtml() {
   return Promise.all(promiseArray);
 }
 
-function countOccurences(names) {
-  let counts = [];
-  names.forEach(name => {
-    let count = occurrences(html, name.fullName);
-    if (count) counts.push({fullName: name.fullName, count: count});
+function countOccurences(people) {
+  people.forEach(person => {
+    let count = occurrences(html, person.fullName);
+    person.countDelta = person.count !== null ? count - person.count : count;
+    person.count = count;
   });
+  return people;
 }
 
 function occurrences(string, subString, allowOverlapping){
@@ -58,20 +62,23 @@ function occurrences(string, subString, allowOverlapping){
   return n;
 }
 
+function calculateScores(maxs) {
+  return News.getAll()
+    .then(results => results.map(result => {
+      let c = result.count / maxs[0] || 0;
+      let cd = result.countDelta / maxs[1] || 0;
+      let score = Math.floor(((c + cd) / 2) * 1000);
+      if (result.score !== null) result.scoreDelta = score - result.score;
+      result.score = score;
+      return result;
+    }));
+}
+
 function requestP(url) {
   return new Promise((resolve, reject) => {
     request(url, (err, response, body) => {
       if (err) reject(err);
       else resolve(body);
-    });
-  });
-}
-
-function writeFileP(loc, data) {
-  return new Promise((resolve, reject) => {
-    writeFile(loc, data, function(err) {
-      if (err) reject(err);
-      else resolve(loc);
     });
   });
 }
