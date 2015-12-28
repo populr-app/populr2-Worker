@@ -1,6 +1,6 @@
 
 import Sequelize from 'sequelize';
-let uri =  process.env.JAWSDB_URL || `mysql://root@localhost:3306/populr`;
+let uri =  process.env.MYSQLURL || `mysql://root@localhost:3306/populr`;
 
 export default new Sequelize(uri, {
   dialectOptions: {
