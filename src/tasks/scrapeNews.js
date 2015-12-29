@@ -1,5 +1,5 @@
 
-import * as News from '../database/news/controller';
+import { News } from 'populr2-database';
 import cheerio from 'cheerio';
 import request from 'request';
 import { default as log } from 'loggerlite';

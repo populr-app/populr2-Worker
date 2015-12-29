@@ -1,7 +1,7 @@
 
 import * as _ from 'lodash';
 import twitterApi from 'twitter';
-import * as Twitter from '../database/twitter/controller';
+import { Twitter } from 'populr2-database';
 import { default as log } from 'loggerlite';
 
 let twitterClient = new twitterApi({

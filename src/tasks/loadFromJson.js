@@ -1,10 +1,6 @@
 
 import { assign, chunk } from 'lodash';
-import db from '../database/connection';
-import * as People from '../database/people/controller';
-import * as Context from '../database/context/controller';
-import * as Twitter from '../database/twitter/controller';
-import * as News from '../database/news/controller';
+import { Connection, People, Context, Twitter, News } from 'populr2-database';
 import { default as log } from 'loggerlite';
 
 export default function() {
@@ -14,7 +10,7 @@ export default function() {
   log.verbose(`${'loadFromJson'.magenta} Loading people.json`);
   let data = require('../../json/people.json');
 
-  return db.sync({ force: true })
+  return Connection.sync({ force: true })
     .then(() => data.map(personObj => {
       log.verbose(`${'loadFromJson'.magenta} Preparing data for ${personObj.fullName.green}`);
       personObj = assign(personObj, personObj.context, personObj.twitter);
