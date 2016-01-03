@@ -98,6 +98,7 @@ function pushTweet(string, tweet) {
       text: tweet.text,
       source: tweet.source
     });
+    if (arr.length > 5) arr.shift();
   }
   return JSON.stringify(arr);
 }
@@ -105,5 +106,6 @@ function pushTweet(string, tweet) {
 function pushToString(string, val) {
   var arr = JSON.parse(string);
   arr.push(val);
+  if (arr.length > 144) arr.shift();
   return JSON.stringify(arr);
 }

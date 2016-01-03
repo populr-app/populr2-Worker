@@ -1,7 +1,7 @@
 
 import { default as log } from 'loggerlite';
 
-global.loggerlite.corePrefix = '['.cyan + 'populr'.magenta + ']'.cyan;
+global.loggerlite.corePrefix = '['.cyan + 'Populr2-Worker'.magenta + ']'.cyan;
 global.loggerlite.logLevel = 'info';
 
 let sequence = process.argv.slice(2);

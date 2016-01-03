@@ -5,9 +5,7 @@
   "main": "server.js",
   "scripts": {
     "postinstall": "npm run build",
-    "build": "babel src -d dist",
-    "scrape": "node ./dist scrapeNews scrapeTwitter",
-    "wipedb": "node ./dist dropDatabase loadFromJson"
+    "build": "babel src -d dist"
   },
   "repository": {
     "type": "git",
