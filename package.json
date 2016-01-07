@@ -2,7 +2,7 @@
   "name": "populr2-worker",
   "version": "2.0.0",
   "description": "Webworker for Populr API v2",
-  "main": "server.js",
+  "main": "dist/index.js",
   "scripts": {
     "postinstall": "npm run build",
     "build": "babel src -d dist"

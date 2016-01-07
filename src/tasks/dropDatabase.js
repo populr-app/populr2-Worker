@@ -1,6 +1,6 @@
 
 import { Connection } from 'populr2-database';
-import { default as log } from 'loggerlite';
+import log from 'loggerlite';
 
 export default function() {
   log.info(`${'dropDatabase'.magenta} Started...`);

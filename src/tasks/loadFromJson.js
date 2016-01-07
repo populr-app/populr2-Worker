@@ -1,14 +1,14 @@
 
 import { assign, chunk } from 'lodash';
 import { Connection, People, Context, Twitter, News } from 'populr2-database';
-import { default as log } from 'loggerlite';
+import log from 'loggerlite';
 
 export default function() {
   log.info(`${'loadFromJson'.magenta} Started...`);
   log.time('loadFromJson');
 
   log.verbose(`${'loadFromJson'.magenta} Loading people.json`);
-  let data = require('../../json/people.json');
+  const data = require('../../json/people.json');
 
   return Connection.sync({ force: true })
     .then(() => data.map(personObj => {
@@ -32,8 +32,8 @@ export default function() {
     })
     .then(data => {
       log.verbose(`${'loadFromJson'.magenta} Placing into ${'Context'.green} table`);
-      return Promise.all(chunk(data, 2000).map(chunk => {
-        return Context.bulkCreate(chunk);
+      return Promise.all(chunk(data, 2000).map(peopleChunk => {
+        return Context.bulkCreate(peopleChunk);
       }));
     })
     .then(() => log.info(`${'loadFromJson'.magenta} Complete in ${log.time('loadFromJson').green} seconds`))

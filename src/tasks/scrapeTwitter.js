@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import twitterApi from 'twitter';
 import { Twitter } from 'populr2-database';
-import { default as log } from 'loggerlite';
+import log from 'loggerlite';
 
 let twitterClient = new twitterApi({
   consumer_key: process.env.TWITTERCK || require('../../local').twitter.consumer_key,

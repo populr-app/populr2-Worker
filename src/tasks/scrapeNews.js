@@ -2,9 +2,9 @@
 import { News } from 'populr2-database';
 import cheerio from 'cheerio';
 import request from 'request';
-import { default as log } from 'loggerlite';
+import log from 'loggerlite';
 
-let sites = require('../../json/sites.json');
+const sites = require('../../json/sites.json');
 let html = '';
 
 export default function() {
@@ -50,7 +50,7 @@ function countOccurences(people) {
   log.verbose(`${'scrapeNews'.magenta} Counting occurences`);
   log.time('countOccurences');
   people.forEach(person => {
-    let count = occurrences(html, person.fullName);
+    const count = occurrences(html, person.fullName);
     person.countDelta = person.count !== null ? count - person.count : count;
     person.count = count;
   });
@@ -75,9 +75,9 @@ function calculateScores(maxs) {
   log.verbose(`${'scrapeNews'.magenta} Calculating scores`);
   return News.getAll()
     .then(results => results.map(result => {
-      let c = result.count / maxs[0] || 0;
-      let cd = result.countDelta / maxs[1] || 0;
-      let score = Math.floor(((c + cd) / 2) * 1000);
+      const c = result.count / maxs[0] || 0;
+      const cd = result.countDelta / maxs[1] || 0;
+      const score = Math.floor(((c + cd) / 2) * 1000);
       if (result.score !== null) result.scoreDelta = score - result.score;
       result.score = score;
       return result;
