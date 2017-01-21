@@ -1,0 +1,10 @@
+{
+  "env": {
+    "node": true
+  },
+  "globals": {
+    "log": true,
+    "config": true
+  },
+  "extends": "airbnb-base"
+}
