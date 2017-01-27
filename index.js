@@ -10,7 +10,7 @@ if (tasks.length) {
       if (t in available) return available[t]();
       return Promise.reject(`Invalid task: ${t}`);
     }), Promise.resolve()))
-    .catch(e => {
+    .catch((e) => {
       log.error(e);
       help();
     })
