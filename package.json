@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "colorslite": "^0.0.3",
+    "lodash": "^4.17.4",
     "populr2-Database": "https://github.com/persnickety-vagabond/populr2-Database.git",
-    "rc": "^1.1.6"
+    "rc": "^1.1.6",
+    "twitter": "^1.7.0"
   }
 }
