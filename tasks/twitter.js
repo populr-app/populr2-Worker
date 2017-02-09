@@ -18,7 +18,7 @@ module.exports = () => {
 };
 
 function getUsers() {
-  return db.twitter.findAll({ where: { handle: { $not: null } } });
+  return db.twitter.findAll({ where: { handle: { $not: null, $and: { $not: '' } } } });
 }
 
 function splitIntoChunks(users) {
