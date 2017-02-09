@@ -37,5 +37,5 @@ function calculateScore(people) {
       positionDelta: p.position === null ? 0 : p.position - position,
       position,
     };
-  }), { updateOnDuplicate: ['id', 'position', 'positionDelta'] });
+  }), { updateOnDuplicate: ['id', 'position', 'positionDelta', 'updatedAt'] });
 }

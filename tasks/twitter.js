@@ -54,7 +54,7 @@ function updatePeople(results) {
       followers: map[k].new.followers,
       followersDelta: map[k].new.followersDelta,
     };
-  }), { updateOnDuplicate: ['id', 'followers', 'followersDelta'] });
+  }), { updateOnDuplicate: ['id', 'followers', 'followersDelta', 'updatedAt'] });
 }
 
 function findTops() {
